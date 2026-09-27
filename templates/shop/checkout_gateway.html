@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .gateway-container { padding: 120px 20px; background-color: var(--bg-linen); min-height: calc(100vh - 160px); display: flex; justify-content: center; align-items: center; }
+    .gateway-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; width: 100%; }
+    .gateway-card { background: #fff; padding: 40px; border-radius: 12px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eaeaea; }
+    .gateway-card h2 { color: var(--text-olive); font-size: 2.5rem; margin-top: 0; margin-bottom: 15px; font-family: 'Gabriola', serif; }
+    .gateway-card p { color: #666; margin-bottom: 30px; font-size: 1.1rem; line-height: 1.5; font-family: sans-serif; }
+    
+    .btn-solid { background: var(--text-olive); color: #fff; padding: 15px 30px; display: block; text-decoration: none; border-radius: 6px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; font-family: sans-serif; transition: opacity 0.3s; }
+    .btn-solid:hover { opacity: 0.9; }
+    
+    .btn-outline { border: 2px solid var(--text-olive); color: var(--text-olive); padding: 15px 30px; display: block; text-decoration: none; border-radius: 6px; font-weight: bold; text-transform: uppercase; font-family: sans-serif; transition: all 0.3s; }
+    .btn-outline:hover { background: var(--text-olive); color: #fff; }
+    
+    @media (max-width: 768px) { .gateway-grid { grid-template-columns: 1fr; } }
+</style>
+
+<div class="gateway-container">
+    <div class="gateway-grid">
+        <div class="gateway-card">
+            <h2>Já sou Cliente</h2>
+            <p>Inicie sessão para um checkout mais rápido e acompanhe o estado da sua encomenda no futuro.</p>
+            <a href="{% url 'login' %}?next={% url 'shop:checkout_process' %}" class="btn-solid">Iniciar Sessão</a>
+            <a href="{% url 'register' %}?next={% url 'shop:checkout_process' %}" class="btn-outline">Criar Conta</a>
+        </div>
+        
+        <div class="gateway-card" style="background: #fafafa;">
+            <h2>Checkout Rápido</h2>
+            <p>Não quer criar conta? Não há qualquer problema. Prossiga como convidado de forma segura.</p>
+            <a href="{% url 'shop:checkout_process' %}" class="btn-solid" style="background: var(--text-brown);">Continuar como Convidado</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

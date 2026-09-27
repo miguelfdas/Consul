@@ -1,0 +1,176 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Quinta do Consul{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/logo.svg' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .scroll-container {
+            height: 100%;
+            width: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #site-footer {
+            flex-shrink: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="fullscreen-menu" class="fullscreen-menu">        
+        <div class="menu-left">
+            <a href="{% url 'shop:product_list' %}" class="menu-category" style="color: var(--text-brown);">{% trans "Todos os Produtos" %}</a>
+            {% for c in categories %}
+            <a href="{{ c.get_absolute_url }}" class="menu-category" style="color: var(--text-brown);">{{ c.name }}</a>
+            {% endfor %}
+        </div>
+        
+        <div class="menu-right">
+        </div>
+    </div>
+
+    <header>
+        <div class="header-left">
+            <div class="menu-icon" id="menu-toggle">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="#000">
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                </svg>
+            </div>
+            <div class="gold-bar"></div>
+            <a href="{% url 'home' %}" class="logo-link">
+                <img src="{% static 'img/logo.svg' %}" alt="Quinta do Consul Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <span style="display:none; font-size:24px; font-weight:bold; font-family: 'Gabriola';">Quinta do Consul</span>
+            </a>
+        </div>
+        
+        <div class="header-right">
+            <div class="lang-switch">
+                <form action="{% url 'set_language' %}" method="post" style="display: flex; gap: 8px; align-items: center; margin: 0;">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                    
+                    <button type="submit" name="language" value="en" style="background: none; border: none; cursor: pointer; padding: 0;" title="English">
+                        <img src="https://flagcdn.com/gb.svg" width="22" alt="UK Flag">
+                    </button>
+                    
+                    <span class="divider">|</span>
+                    
+                    <button type="submit" name="language" value="pt" style="background: none; border: none; cursor: pointer; padding: 0;" title="Português">
+                        <img src="https://flagcdn.com/pt.svg" width="22" alt="Portuguese Flag">
+                    </button>
+                </form>
+            </div>
+
+            <form class="search-container" action="{% url 'shop:product_search' %}" method="GET">
+                <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+                <button type="submit" style="background: none; border: none; cursor: pointer; display: flex; align-items: center;">
+                    <svg viewBox="0 0 24 24" width="18" height="18">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+            </form>
+
+            <a href="{% url 'shop:cart_detail' %}" class="icon-link" title="Carrinho" style="position: relative;">
+                <svg viewBox="0 0 24 24">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                {% if cart|length > 0 %}
+                <span style="position: absolute; top: -8px; right: -8px; background: #dc3545; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; justify-content: center; align-items: center; font-family: sans-serif; font-weight: bold;">
+                    {{ cart|length }}
+                </span>
+                {% endif %}
+            </a>
+
+            <a href="{% if request.user.is_authenticated %}{% if request.user.is_superuser %}{% url 'shop:pai_products' %}{% else %}{% url 'shop:profile' %}{% endif %}{% else %}{% url 'login' %}{% endif %}" class="icon-link" title="Área Pessoal">                <svg viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <div class="scroll-container">
+        <main>
+            {% block content %}{% endblock content %}
+        </main>
+        
+        <footer id="site-footer">
+            <div class="footer-top">
+                <div class="footer-nav">
+                    <a href="{% url 'home' %}">{% trans "Home" %}</a>
+                    <a href="{% url 'about' %}">{% trans "Sobre nós" %}</a>
+                    <a href="{% url 'shop:product_list' %}">{% trans "Products" %}</a>
+                    <a href="{% url 'contacts' %}">{% trans "contactos" %}</a>
+                </div>
+                
+                <div class="footer-info">
+                    <div class="payment-icons">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/MB_Way_Logo.svg/1024px-MB_Way_Logo.svg.png" alt="MB Way" width="50">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa" width="50">
+                    </div>
+
+                    <div class="social-links">
+                        <a href="#" target="_blank" title="Instagram">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                            </svg>
+                        </a>
+                        <a href="#" target="_blank" title="Facebook">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 Quinta do Consul. Designed and Developed by Miguel Filipe de Andrade Sérgio.
+            </div>
+        </footer>
+    </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+
+    {% if messages %}
+    <div id="dynamic-toast" style="position:fixed; top:100px; left:50%; transform:translateX(-50%); background-color:var(--gold); color:#000000; padding:20px 40px; border-radius:12px; font-size:1.5rem; font-weight:bold; box-shadow:0 10px 30px rgba(0,0,0,0.2); z-index:9999; text-align:center; font-family: sans-serif; animation: dropIn 0.5s ease-out forwards;">
+        {% for message in messages %}
+            {{ message }}<br>
+        {% endfor %}
+    </div>
+    <script>
+        setTimeout(() => {
+            const toast = document.getElementById('dynamic-toast');
+            if (toast) {
+                toast.style.transition = 'opacity 0.5s';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }
+        }, 5000);
+    </script>
+    <style>
+        @keyframes dropIn { from { top: -100px; opacity: 0; } to { top: 100px; opacity: 1; } }
+    </style>
+    {% endif %}
+
+</body>
+</html>

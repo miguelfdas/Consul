@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .auth-container { min-height: calc(100vh - 160px); background-color: var(--bg-linen); display: flex; justify-content: center; align-items: center; padding: 60px 20px; box-sizing: border-box; font-family: sans-serif; }
+    .auth-card { background-color: #ffffff; padding: 50px 40px; border-radius: 8px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); width: 100%; max-width: 800px; border: 1px solid #eaeaea; }
+    .auth-header { text-align: center; margin-bottom: 35px; }
+    .auth-title { font-size: 2rem; color: #000000; margin: 0 0 10px 0; font-weight: 800; }
+    .auth-subtitle { color: #666; font-size: 0.95rem; margin: 0; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+    .form-group { margin-bottom: 20px; position: relative; }
+    .form-group.full-width { grid-column: span 2; }
+    .form-group label { display: block; font-size: 0.85rem; color: #333; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input { width: 100%; padding: 14px 16px; font-size: 1rem; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; transition: border-color 0.2s; }
+    .form-group input:focus { outline: none; border-color: var(--text-olive); }
+    .password-toggle { position: absolute; right: 15px; top: 38px; cursor: pointer; color: #888; display: flex; align-items: center; }
+    .btn-auth { background-color: var(--text-olive); color: #ffffff; border: none; padding: 18px; width: 100%; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background-color 0.3s; margin-top: 10px; }
+    .btn-auth:hover { background-color: #3e4d22; }
+    .auth-footer { text-align: center; margin-top: 30px; font-size: 0.95rem; color: #555; border-top: 1px solid #eaeaea; padding-top: 25px; }
+    .auth-footer a { color: var(--text-olive); font-weight: 700; text-decoration: none; margin-left: 5px; }
+    .section-title { grid-column: span 2; font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; margin-top: 10px; color: var(--text-olive); }
+    
+    @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .form-group.full-width, .section-title { grid-column: span 1; } }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-title">Criar Conta</h1>
+            <p class="auth-subtitle">Junte-se a nós e desfrute de produtos artesanais de excelência.</p>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-grid">
+                <!-- Dados Pessoais -->
+                <div class="section-title">Dados Pessoais</div>
+                <div class="form-group"><label>Nome</label><input type="text" name="first_name" required></div>
+                <div class="form-group"><label>Apelido</label><input type="text" name="last_name" required></div>
+                <div class="form-group"><label>E-mail</label><input type="email" name="email" required></div>
+                <div class="form-group"><label>Telemóvel</label><input type="text" name="phone"></div>
+                <div class="form-group full-width"><label>Nome de Utilizador</label><input type="text" name="username" required></div>
+
+                <!-- Morada -->
+                <div class="section-title">Endereço de Faturação e Envio</div>
+                <div class="form-group full-width"><label>Morada Completa</label><input type="text" name="address" required></div>
+                <div class="form-group"><label>Nº de Porta</label><input type="text" name="door_number"></div>
+                <div class="form-group"><label>Código Postal</label><input type="text" name="postal_code" required></div>
+                <div class="form-group full-width"><label>Localidade</label><input type="text" name="locality" required></div>
+
+                <!-- Segurança -->
+                <div class="section-title">Segurança</div>
+                <div class="form-group">
+                    <label>Palavra-passe</label>
+                    <input type="password" name="password" id="reg_password" required>
+                    <div class="password-toggle" onclick="togglePassword('reg_password', this)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Palavra-passe</label>
+                    <input type="password" name="password_confirm" id="reg_password_conf" required>
+                    <div class="password-toggle" onclick="togglePassword('reg_password_conf', this)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-auth">Registar e Continuar</button>
+        </form>
+
+        <div class="auth-footer">
+            Já tem uma conta? <a href="{% url 'login' %}">Iniciar Sessão</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword(inputId, iconElement) {
+        const input = document.getElementById(inputId);
+        if (input.type === "password") {
+            input.type = "text";
+            iconElement.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+        } else {
+            input.type = "password";
+            iconElement.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<style>
+    html, body {
+        height: 100vh !important;
+        overflow: hidden !important; 
+        margin: 0 !important;
+        background-color: var(--bg-linen) !important;
+    }
+
+    main {
+        flex: 1 1 0 !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    #site-footer {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 9999 !important;
+        transform: translateY(0) !important;
+    }
+
+    .contacts-wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        background-color: rgb(255, 255, 255);
+        box-sizing: border-box;
+    }
+
+    .contacts-left {
+        width: 55%;
+        height: 100%;
+        padding: 50px 5% 20px 10%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-sizing: border-box;
+        overflow-y: auto;
+    }
+
+    .contacts-right {
+        width: 45%;
+        height: 100%;
+        padding: 0;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .contacts-right img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 20% center; /* Ajustado para a nova largura, garantindo o foco nas flores */
+        display: block;        
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 5%, black 65%);
+        mask-image: linear-gradient(to right, transparent 0%, transparent 5%, black 65%);
+    }
+
+    .contacts-title {
+        font-family: 'Gabriola', serif;
+        font-size: clamp(3rem, 5vw, 4.5rem);
+        color: var(--gold);
+        margin-top: 60px;
+        margin-bottom: 130px;
+        text-transform: uppercase;
+        line-height: 1;
+    }
+
+    .contacts-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 130px 150px;
+    }
+
+    .contact-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-item.full-width {
+        grid-column: span 2;
+    }
+
+    .contact-label {
+        font-size: clamp(0.85rem, 1vw, 1rem);
+        color: var(--gold);
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+        margin-bottom: 8px;
+        font-family: sans-serif;
+    }
+
+    .contact-value, .contact-value a {
+        font-size: clamp(1.1rem, 1.4vw, 1.4rem);
+        color: #000000;
+        line-height: 1.6;
+        font-family: sans-serif;
+        text-decoration: none;
+    }
+
+    .contact-value a:hover {
+        opacity: 0.7;
+    }
+
+    @media (max-width: 950px) {
+        .scroll-container {
+            overflow-y: auto !important; 
+        }
+        main {
+            flex: auto !important;
+            min-height: auto !important;
+            overflow: visible !important;
+        }
+        .contacts-wrapper {
+            flex-direction: column;
+            height: auto;
+        }
+        .contacts-left {
+            width: 100%;
+            padding: 10% 5%;
+        }
+        .contacts-right {
+            width: 100%;
+            height: 40vh;
+            justify-content: center;
+        }
+        .contacts-right img {
+            max-width: 100%;
+            -webkit-mask-image: none;
+            mask-image: none;
+        }
+    }
+</style>
+
+<div class="contacts-wrapper">
+    <div class="contacts-left">
+        <h1 class="contacts-title">{% trans "Contactos" %}</h1>
+        
+        <div class="contacts-info-grid">
+            <div class="contact-item">
+                <div class="contact-label">{% trans "Telemóvel" %}</div>
+                <div class="contact-value">
+                    <a href="tel:+351933378587">+351 933 378 587</a>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-label">{% trans "E-mail" %}</div>
+                <div class="contact-value">
+                    <a href="mailto:sergioconsul@live.com.pt">sergioconsul@live.com.pt</a>
+                </div>
+            </div>
+
+            <div class="contact-item full-width">
+                <div class="contact-label">{% trans "Morada" %}</div>
+                <div class="contact-value">
+                    Quinta do Cônsul<br>
+                    6430-251 Mêda, Portugal
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="contacts-right">
+        <img src="{% static 'img/example_2.png' %}" alt="Quinta do Cônsul - Contactos">
+    </div>
+</div>
+{% endblock content %}

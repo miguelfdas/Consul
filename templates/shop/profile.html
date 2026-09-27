@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .profile-container { padding: 120px 5% 80px 5%; min-height: calc(100vh - 160px); background-color: var(--bg-grey); font-family: sans-serif; }
+    .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .profile-title { font-size: clamp(2rem, 4vw, 3rem); color: var(--text-brown); text-transform: uppercase; margin: 0; font-family: 'Gabriola', serif; }
+    
+    .btn-logout { background-color: #dc3545; color: white; padding: 12px 25px; font-size: 1rem; border-radius: 6px; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; transition: opacity 0.3s; }
+    .btn-logout:hover { opacity: 0.9; }
+    
+    .profile-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; }
+    .profile-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .profile-card h3 { color: var(--text-olive); font-size: 1.8rem; margin-top: 0; margin-bottom: 20px; font-family: 'Gabriola', serif; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+    
+    /* Formulário de Dados */
+    .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 0.9rem; font-weight: bold; color: #333; text-transform: uppercase; }
+    .form-group input { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
+    .btn-save { background-color: var(--text-olive); color: white; padding: 15px; width: 100%; font-size: 1.1rem; border-radius: 6px; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; margin-top: 10px; }
+    
+    /* Histórico de Encomendas */
+    .order-list { display: flex; flex-direction: column; gap: 15px; }
+    .order-item { border: 1px solid #eee; padding: 15px; border-radius: 8px; background: #fafafa; }
+    .order-item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .order-ref { font-weight: bold; font-size: 1.2rem; color: #000; }
+    .order-date { color: #666; font-size: 0.9rem; }
+    .order-status { font-weight: bold; padding: 5px 10px; border-radius: 4px; font-size: 0.85rem; text-transform: uppercase; }
+    .status-paid { background-color: #d4edda; color: #155724; }
+    .status-pending { background-color: #fff3cd; color: #856404; }
+    .order-price { font-size: 1.3rem; font-weight: bold; color: var(--text-brown); text-align: right; margin-top: 10px; }
+
+    @media (max-width: 900px) {
+        .profile-grid { grid-template-columns: 1fr; }
+        .profile-header { flex-direction: column; gap: 20px; text-align: center; }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h1 class="profile-title">A Minha Conta</h1>
+        
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout">Sair (Logout)</button>
+        </form>
+    </div>
+
+    <div class="profile-grid">
+        <!-- Coluna Esquerda: Editar Dados -->
+        <div class="profile-card">
+            <h3>Os Meus Dados</h3>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label>{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn-save">Guardar Alterações</button>
+            </form>
+        </div>
+
+        <!-- Coluna Direita: Encomendas -->
+        <div class="profile-card">
+            <h3>Histórico de Encomendas</h3>
+            <div class="order-list">
+                {% for order in orders %}
+                    <div class="order-item">
+                        <div class="order-item-top">
+                            <div>
+                                <div class="order-ref">Encomenda #{{ order.id }}</div>
+                                <div class="order-date">{{ order.created_at|date:"d/m/Y H:i" }}</div>
+                            </div>
+                            <div class="order-status {% if order.is_paid %}status-paid{% else %}status-pending{% endif %}">
+                                {% if order.is_paid %}PAGA{% else %}AGUARDA PAGAMENTO{% endif %}
+                            </div>
+                        </div>
+                        <div style="font-size: 0.95rem; color: #444;">
+                            <strong>Envio:</strong> {{ order.address }}<br>
+                            <strong>Método:</strong> {{ order.get_payment_method_display }}
+                        </div>
+                        <div class="order-price">{{ order.total_price }} €</div>
+                    </div>
+                {% empty %}
+                    <p style="color: #666; text-align: center; padding: 20px 0;">Ainda não efetuou nenhuma encomenda.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

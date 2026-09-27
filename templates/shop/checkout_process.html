@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .checkout-wrapper { padding: 120px 5% 80px 5%; background-color: var(--bg-grey); min-height: calc(100vh - 160px); display: flex; justify-content: center; align-items: flex-start; }
+    .checkout-form-container { background: #fff; padding: 40px; border-radius: 12px; width: 100%; max-width: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; font-family: sans-serif; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
+    .form-group.full { grid-column: span 2; }
+    .form-group label { font-size: 0.9rem; font-weight: bold; color: #333; text-transform: uppercase; }
+    .form-group input { padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
+    
+    .payment-methods { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-family: sans-serif; }
+    .payment-card { display: flex; align-items: center; gap: 15px; padding: 20px; border: 2px solid #eaeaea; border-radius: 8px; margin-bottom: 15px; cursor: pointer; transition: all 0.2s; }
+    .payment-card:has(input:checked) { border-color: var(--text-olive); background: #fdfdfd; }
+    .payment-card input { transform: scale(1.3); cursor: pointer; }
+    .payment-card label { font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; display: flex; justify-content: space-between; align-items: center; margin: 0; }
+    
+    .shipping-notice { background: #fff3cd; color: #856404; padding: 15px; border-radius: 6px; font-size: 0.95rem; margin-top: 10px; display: none; border: 1px solid #ffeeba; }
+    
+    .btn-submit { background: var(--text-brown); color: #fff; width: 100%; padding: 20px; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; cursor: pointer; text-transform: uppercase; transition: opacity 0.3s; }
+    .btn-submit:hover { opacity: 0.9; }
+
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .form-group.full { grid-column: span 1; } }
+</style>
+
+<div class="checkout-wrapper">
+    <div class="checkout-form-container">
+        <h1 style="color: var(--text-brown); margin-top: 0; font-family: 'Gabriola', serif; font-size: 3rem; text-align: center;">Detalhes de Envio</h1>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group full"><label>Nome Completo</label>{{ form.customer_name }}</div>
+                <div class="form-group full"><label>Email</label>{{ form.email }}</div>
+                <div class="form-group full"><label>Morada Completa</label>{{ form.address }}</div>
+                <div class="form-group"><label>Nº de Porta</label>{{ form.door_number }}</div>
+                <div class="form-group"><label>Código Postal</label>{{ form.postal_code }}</div>
+                <div class="form-group full"><label>Localidade</label>{{ form.locality }}</div>
+            </div>
+
+            <div class="payment-methods">
+                <h2 style="color: var(--text-brown); font-family: 'Gabriola', serif; font-size: 2.5rem; margin-bottom: 5px;">Pagamento</h2>
+                <p style="font-size: 0.95rem; color: #666; margin-top: 0; margin-bottom: 20px; font-weight: bold;">
+                    Subtotal: {{ cart.get_total_price }} € | Portes de Envio Fixos: 5,00 €
+                </p>
+                
+                <div class="payment-card">
+                    <input type="radio" id="mbway" name="payment_method" value="mbway" checked>
+                    <label for="mbway">MB Way (Manual) <span style="font-size: 1.5rem;">📲</span></label>
+                </div>
+                
+                <div class="payment-card">
+                    <input type="radio" id="tb" name="payment_method" value="tb">
+                    <label for="tb">Transferência Bancária <span style="font-size: 1.5rem;">🏦</span></label>
+                </div>
+                
+                <div class="payment-card">
+                    <input type="radio" id="entrega" name="payment_method" value="entrega">
+                    <label for="entrega">Pagamento na Entrega <span style="font-size: 1.5rem;">📦</span></label>
+                </div>
+
+                <div id="taxa-cobranca" class="shipping-notice">
+                    ⚠️ <strong>Atenção:</strong> O serviço de envio à cobrança pelos CTT inclui uma taxa adicional de <strong>3,00 €</strong>.
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Finalizar Encomenda</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Mostra ou esconde o aviso da taxa extra conforme a opção escolhida
+    const radios = document.querySelectorAll('input[name="payment_method"]');
+    const taxaAviso = document.getElementById('taxa-cobranca');
+
+    radios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'entrega') {
+                taxaAviso.style.display = 'block';
+            } else {
+                taxaAviso.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

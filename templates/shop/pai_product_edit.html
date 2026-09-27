@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .pai-container { padding: 120px 5% 50px 5%; min-height: calc(100vh - 160px); background-color: var(--bg-linen); font-family: sans-serif; }
+    .pai-title { font-size: clamp(2rem, 4vw, 3rem); color: var(--text-olive); text-transform: uppercase; margin: 0 0 40px 0; text-align: center; }
+    .pai-form { background: white; padding: 50px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
+    .form-group { margin-bottom: 30px; display: flex; flex-direction: column; gap: 10px; }
+    .form-group label { font-size: 1.4rem; color: #000000; font-weight: bold; }
+    .form-group input, .form-group select, .form-group textarea { padding: 20px; font-size: 1.2rem; border: 2px solid #ccc; border-radius: 8px; width: 100%; box-sizing: border-box; }
+    .form-group input[type="checkbox"] { width: 30px; height: 30px; cursor: pointer; }
+    .btn-massive { background-color: var(--text-olive); color: white; padding: 20px 40px; font-size: 1.5rem; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; width: 100%; margin-top: 20px; }
+    .variant-section { margin-top: 50px; border-top: 4px solid var(--bg-linen); padding-top: 30px; }
+    .variant-title { font-size: 2rem; color: var(--text-olive); margin-bottom: 20px; }
+</style>
+<div class="pai-container">
+    <h1 class="pai-title">{% if product.pk %}Editar Produto{% else %}Novo Produto{% endif %}</h1>
+    <form method="POST" class="pai-form">
+        {% csrf_token %}
+        
+        {% for field in form %}
+        <div class="form-group">
+            <label>{{ field.label }}</label>
+            {{ field }}
+        </div>
+        {% endfor %}
+
+        <div class="variant-section">
+            <h2 class="variant-title">Tamanhos e Preços</h2>
+            {{ formset.management_form }}
+            {% for form in formset %}
+                <div style="background:#f9f9f9; padding:20px; border-radius:8px; margin-bottom:20px;">
+                    {% for field in form %}
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label style="font-size:1.2rem; color:#000000;">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn-massive">Guardar Produto</button>
+        <a href="{% url 'shop:pai_products' %}" style="display:block; text-align:center; margin-top:30px; color:#000000; font-size:1.2rem; text-decoration:underline; font-weight:bold;">Cancelar e Voltar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<style>
+    .catalog-wrapper {
+        min-height: calc(100vh - 160px);
+        background-color: var(--bg-grey);
+        padding: 120px 5% 50px 5%;
+        box-sizing: border-box;
+    }
+
+    .catalog-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .catalog-title {
+        font-size: clamp(3rem, 5vw, 4.5rem);
+        color: var(--text-brown);
+        margin: 0;
+        text-transform: uppercase;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .product-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        text-decoration: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    .product-image-container {
+        width: 100%;
+        height: 250px;
+        background-color: #f9f9f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .product-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-info {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .product-name {
+        font-size: 1.4rem;
+        color: #000000;
+        margin: 0 0 10px 0;
+        font-family: sans-serif;
+        font-weight: bold;
+    }
+
+    .product-price {
+        font-size: 1.2rem;
+        color: var(--text-brown);
+        margin-top: auto;
+        font-family: sans-serif;
+    }
+</style>
+
+<div class="catalog-wrapper">
+    <div class="catalog-header">
+        <h1 class="catalog-title">
+            {% if category %}{{ category.name }}{% else %}{% trans "Todos os Produtos" %}{% endif %}
+        </h1>
+    </div>
+
+    <div class="product-grid">
+        {% for product in products %}
+        <a href="{{ product.get_absolute_url }}" class="product-card">
+            <div class="product-image-container">
+                {% if product.images.first %}
+                <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                <img src="{% static 'img/example.svg' %}" alt="Placeholder">
+                {% endif %}
+            </div>
+            <div class="product-info">
+                <h2 class="product-name">{{ product.name }}</h2>
+                <div class="product-price">
+                    {% if product.variants.first %}
+                        {{ product.variants.first.price }} €
+                    {% else %}
+                        Sob Consulta
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p style="color: #000000; font-family: sans-serif; text-align: center; grid-column: 1 / -1;">
+            {% trans "Nenhum produto disponível nesta categoria." %}
+        </p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

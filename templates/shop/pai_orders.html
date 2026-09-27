@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .pai-container { padding: 120px 5% 50px 5%; min-height: calc(100vh - 160px); background-color: var(--bg-grey); font-family: sans-serif; }
+    .pai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .pai-title { font-size: clamp(2rem, 4vw, 3rem); color: var(--text-brown); text-transform: uppercase; margin: 0; }
+    .btn-massive { background-color: var(--text-brown); color: white; padding: 20px 40px; font-size: 1.2rem; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; text-align: center; }
+    .pai-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    .pai-card { background: white; padding: 30px; border-radius: 12px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .pai-card-top { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+    .pai-card-info { display: flex; flex-direction: column; gap: 10px; }
+    .order-id { font-size: 1.8rem; font-weight: bold; color: #000000; margin: 0; }
+    .order-detail { font-size: 1.1rem; color: #333333; margin: 0; }
+    .pai-card-status { text-align: right; }
+    .order-status { display: inline-block; font-size: 1.2rem; font-weight: bold; padding: 10px 20px; border-radius: 6px; text-align: center; margin-bottom: 10px; }
+    .status-paid { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .status-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    .btn-toggle { background: #333; color: #fff; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
+    .btn-toggle:hover { opacity: 0.8; }
+    .pai-products-list { background: #f9f9f9; padding: 20px; border-radius: 8px; }
+    .pai-products-list ul { list-style: none; padding: 0; margin: 0; }
+    .pai-products-list li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ccc; font-size: 1.1rem; }
+    .pai-products-list li:last-child { border-bottom: none; }
+    .financials { margin-top: 15px; text-align: right; font-size: 1.1rem; color: #555; }
+    
+    @media (max-width: 950px) {
+        .pai-header { flex-direction: column; gap: 20px; text-align: center; }
+        .pai-card-top { flex-direction: column; gap: 20px; text-align: center; align-items: center; }
+        .pai-card-status { text-align: center; }
+    }
+</style>
+<div class="pai-container">
+    <div class="pai-header">
+        <h1 class="pai-title">Encomendas Recebidas</h1>
+        <a href="{% url 'shop:pai_products' %}" class="btn-massive">Voltar aos Produtos</a>
+    </div>
+    <div class="pai-grid">
+        {% for order in orders %}
+        <div class="pai-card">
+            
+            <div class="pai-card-top">
+                <div class="pai-card-info">
+                    <h2 class="order-id">Encomenda #{{ order.id }} - {{ order.customer_name }}</h2>
+                    <p class="order-detail"><strong>Data:</strong> {{ order.created_at|date:"d/m/Y H:i" }} | <strong>Email:</strong> {{ order.email }}</p>
+                    <p class="order-detail"><strong>Morada:</strong> {{ order.address }}</p>
+                    <p class="order-detail"><strong>Método:</strong> {{ order.get_payment_method_display }}</p>
+                </div>
+                
+                <div class="pai-card-status">
+                    <div class="order-status {% if order.is_paid %}status-paid{% else %}status-pending{% endif %}">
+                        {% if order.is_paid %}PAGA{% else %}PENDENTE{% endif %}
+                    </div>
+                    {% if not order.is_paid and order.payment_method == 'entrega' %}
+                        <div style="color: #dc3545; font-weight: bold; margin-bottom: 10px;">Enviar à Cobrança: {{ order.total_price }} €</div>
+                    {% endif %}
+                    <br>
+                    <a href="{% url 'shop:toggle_order_paid' order.id %}" class="btn-toggle">
+                        {% if order.is_paid %}Marcar como Pendente{% else %}Marcar como Paga{% endif %}
+                    </a>
+                </div>
+            </div>
+
+            <div class="pai-products-list">
+                <h3 style="margin-top: 0; color: var(--text-brown);">Produtos:</h3>
+                <ul>
+                    {% for item in order.items.all %}
+                    <li>
+                        <span><strong>{{ item.quantity }}x</strong> 
+                        {% if item.variant %}
+                            {{ item.variant.product.name }} ({{ item.variant.size_or_type }})
+                        {% else %}
+                            <em>Produto Apagado</em>
+                        {% endif %}
+                        </span>
+                        <span>{{ item.get_cost }} €</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="financials">
+                    <div>Subtotal: {{ order.products_total }} €</div>
+                    <div>Portes + Taxas CTT: {{ order.shipping_cost }} €</div>
+                    <div style="font-size: 1.4rem; font-weight: bold; color: #000; margin-top: 5px;">Total a Receber: {{ order.total_price }} €</div>
+                </div>
+            </div>
+
+        </div>
+        {% empty %}
+        <h2 style="color:#000000; text-align:center;">Nenhuma encomenda recebida ainda.</h2>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

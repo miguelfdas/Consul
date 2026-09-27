@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .cart-container { padding: 120px 5% 80px 5%; min-height: calc(100vh - 160px); background-color: var(--bg-linen); font-family: sans-serif; }
+    .cart-title { font-size: clamp(2.5rem, 5vw, 4rem); color: var(--text-olive); text-transform: uppercase; margin-bottom: 40px; text-align: center; }
+    .cart-table { width: 100%; max-width: 1000px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-collapse: collapse; overflow: hidden; }
+    .cart-table th { background: var(--text-olive); color: #fff; padding: 20px; text-align: left; font-size: 1.1rem; }
+    .cart-table td { padding: 20px; border-bottom: 1px solid #eee; font-size: 1.2rem; color: #000; }
+    .btn-remove { color: #dc3545; text-decoration: none; font-weight: bold; font-size: 1rem; }
+    .cart-summary { max-width: 1000px; margin: 40px auto 0; text-align: right; }
+    .cart-total { font-size: 2rem; color: #000; font-weight: bold; margin-bottom: 20px; }
+    .btn-checkout { background-color: var(--text-olive); color: #fff; padding: 18px 40px; font-size: 1.2rem; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase; }
+</style>
+<div class="cart-container">
+    <h1 class="cart-title">O Seu Carrinho</h1>
+    {% if cart|length > 0 %}
+    <table class="cart-table">
+        <thead>
+            <tr><th>Produto</th><th>Opção</th><th>Quantidade</th><th>Preço</th><th>Ação</th></tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+            <tr>
+                <td><strong>{{ item.variant.product.name }}</strong></td>
+                <td>{{ item.variant.size_or_type }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.total_price }} €</td>
+                <td><a href="{% url 'shop:cart_remove' item.variant.id %}" class="btn-remove">Remover</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="cart-summary">
+        <div class="cart-total">Total: {{ cart.get_total_price }} €</div>
+        <a href="{% url 'shop:checkout_gateway' %}" class="btn-checkout">Finalizar Compra</a>
+    </div>
+    {% else %}
+    <h2 style="text-align: center; color: #000;">O carrinho está vazio.</h2>
+    {% endif %}
+</div>
+{% endblock %}
