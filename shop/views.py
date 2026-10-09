@@ -14,11 +14,13 @@ from django.views.decorators.http import require_POST
 from .cart import Cart
 from decimal import Decimal
 from django.db.models import Q
+from django.contrib.auth import logout
 
 def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
-    products = Product.objects.filter(is_active=True)
+    
+    products = Product.objects.filter(is_active=True).select_related('category').prefetch_related('images', 'variants')
     
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
@@ -229,3 +231,23 @@ def profile(request):
         'orders': user_orders
     })
     
+@login_required(login_url='/login/')
+def delete_account_rgpd(request):
+    user = request.user
+    
+    if request.method == 'POST':
+        user_orders = Order.objects.filter(user=user)
+        
+        for order in user_orders:
+            order.customer_name = "Utilizador Anonimizado (RGPD)"
+            order.email = "anonimizado@rgpd.local"
+            order.address = "Morada Anonimizada"
+            order.save()
+            
+        user.delete()
+        
+        logout(request)
+        messages.success(request, "A sua conta e dados pessoais foram eliminados com sucesso, em conformidade com o RGPD.")
+        return redirect('home')
+        
+    return render(request, 'shop/confirm_delete.html')

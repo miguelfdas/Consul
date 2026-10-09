@@ -1,0 +1,61 @@
+.checkout-container {
+    padding: 120px 5% 80px 5%;
+    min-height: calc(100vh - 160px);
+    background-color: var(--bg-grey);
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.checkout-card {
+    background: #fff;
+    padding: 50px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+.checkout-title {
+    font-size: 2.5rem;
+    color: var(--text-brown);
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.user-info p {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 10px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.checkout-total {
+    font-size: 2rem;
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    margin: 40px 0;
+}
+
+.btn-confirm {
+    background-color: var(--text-brown);
+    color: #fff;
+    padding: 20px;
+    font-size: 1.2rem;
+    border: none;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.btn-confirm:hover {
+    opacity: 0.9;
+}

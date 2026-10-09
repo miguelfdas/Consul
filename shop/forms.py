@@ -1,12 +1,18 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import Order
+
 CustomUser = get_user_model()
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     password_confirm = forms.CharField(widget=forms.PasswordInput)
     
+    rgpd_consent = forms.BooleanField(
+        required=True,
+        label="Consinto que os meus dados pessoais (morada e contacto) sejam processados e armazenados pela Quinta do Cônsul exclusivamente para efeitos de faturação e expedição de encomendas, de acordo com o RGPD."
+    )
+         
     class Meta:
         model = CustomUser
         fields = ['first_name', 'last_name', 'username', 'email', 'phone', 'address', 'door_number', 'postal_code', 'locality']

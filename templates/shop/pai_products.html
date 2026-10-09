@@ -1,24 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pai_products.css' %}">
+{% endblock %}
 
 {% block content %}
-<style>
-    .pai-container { padding: 120px 5% 50px 5%; min-height: calc(100vh - 160px); background-color: var(--bg-linen); font-family: sans-serif; }
-    .pai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-    .pai-title { font-size: clamp(2rem, 4vw, 3rem); color: var(--text-olive); text-transform: uppercase; margin: 0; }
-    .pai-nav { display: flex; gap: 20px; }
-    .btn-massive { background-color: var(--text-olive); color: white; padding: 20px 40px; font-size: 1.2rem; text-decoration: none; border-radius: 8px; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; text-align: center; }
-    .btn-massive.secondary { background-color: #ffffff; color: #000000; border: 3px solid #000000; }
-    .pai-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-    .pai-card { background: white; padding: 30px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .pai-card-title { font-size: 1.8rem; color: #000000; margin: 0; }
-    .btn-edit { background-color: var(--gold); color: #000000; padding: 15px 30px; font-size: 1.2rem; text-decoration: none; border-radius: 6px; font-weight: bold; text-transform: uppercase; }
 
-    @media (max-width: 950px) {
-        .pai-header { flex-direction: column; gap: 20px; text-align: center; }
-        .pai-nav { flex-direction: column; width: 100%; }
-        .pai-card { flex-direction: column; gap: 20px; text-align: center; }
-    }
-</style>
 <div class="pai-container">
     <div class="pai-header">
         <h1 class="pai-title">Gestão de Produtos</h1>

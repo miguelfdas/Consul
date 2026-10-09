@@ -1,18 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/order_success.css' %}">
+{% endblock %}
+
 {% block content %}
-<style>
-    .success-container { padding: 120px 5% 80px 5%; min-height: calc(100vh - 160px); background-color: var(--bg-linen); display: flex; justify-content: center; align-items: flex-start; font-family: sans-serif; }
-    .success-card { background: #fff; padding: 50px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; }
-    .success-icon { font-size: 60px; color: var(--text-olive); margin-bottom: 20px; }
-    .success-title { font-size: 2.5rem; color: var(--text-olive); margin: 0 0 10px 0; font-family: 'Gabriola', serif; }
-    .order-number { font-size: 1.2rem; color: #666; margin-bottom: 30px; font-weight: bold; }
-    .payment-box { background: #fdfbf7; border: 2px dashed var(--gold); border-radius: 8px; padding: 30px; margin-bottom: 30px; text-align: left; }
-    .payment-box h3 { margin-top: 0; color: #000; text-align: center; font-size: 1.4rem; text-transform: uppercase; }
-    .payment-instruction { text-align: center; font-size: 1.1rem; color: #444; line-height: 1.6; }
-    .payment-detail { font-size: 2rem; font-weight: bold; color: var(--text-brown); text-align: center; margin: 20px 0; letter-spacing: 2px; background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee; }
-    .btn-home { display: inline-block; background-color: var(--text-olive); color: #fff; padding: 15px 30px; font-size: 1.1rem; text-decoration: none; border-radius: 6px; font-weight: bold; text-transform: uppercase; transition: opacity 0.3s; }
-    .btn-home:hover { opacity: 0.9; }
-</style>
 
 <div class="success-container">
     <div class="success-card">
