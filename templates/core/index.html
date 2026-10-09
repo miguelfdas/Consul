@@ -2,10 +2,6 @@
 {% load static %}
 {% load i18n %} 
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}">
-{% endblock %}
-
 {% block content %}
 
 <section class="section" id="about-section">
@@ -75,7 +71,3 @@
 </section>
 
 {% endblock content %}
-
-{% block extra_js %}
-<script src="{% static 'js/index.js' %}"></script>
-{% endblock %}

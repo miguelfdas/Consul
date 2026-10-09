@@ -8,10 +8,7 @@
     <title>{% block title %}Quinta do Consul{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="{% static 'img/logo.svg' %}">
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-
-    {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'dist/css/main.min.css' %}">
 </head>
 <body>
     <div id="fullscreen-menu" class="fullscreen-menu">        
@@ -133,15 +130,12 @@
             {{ message }}<br>
         {% endfor %}
     </div>
-    <script src="{% static 'js/main.js' %}"></script>
     <style>
         @keyframes dropIn { from { top: -100px; opacity: 0; } to { top: 100px; opacity: 1; } }
     </style>
     {% endif %}
 
+    <!-- Carrega o pacote minificado com todo o JS da aplicação -->
     <script src="{% static 'dist/js/main.min.js' %}" defer></script>
-    {% block extra_js %}
-    <script src="{% static 'js/base.js' %}"></script>
-    {% endblock %}
 </body>
 </html>

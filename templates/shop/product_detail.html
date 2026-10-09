@@ -2,10 +2,6 @@
 {% load static %}
 {% load i18n %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
-{% endblock %}
-
 {% block content %}
 
 <div class="detail-wrapper">
@@ -46,8 +42,4 @@
             <button type="submit" class="btn-cart">Adicionar ao Carrinho</button>
         </form>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/product_detail.js' %}"></script>
 {% endblock %}
